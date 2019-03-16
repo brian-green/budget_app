@@ -26,6 +26,37 @@ var budgetController = (function(){
     }
   };
 
+  //public addItem function
+  return {
+    addItem: function(type, des, val){
+      var newItem, ID;
+
+      //creating ID
+      if (data.allItems[type].length > 0) {
+        ID = data.allItems[type][data.allItems[type].length - 1].id +1;
+      } else {
+        ID = 0;
+      }
+
+      //create new item with inc or exp type as the condition
+      if (type === 'exp') {
+        newItem = new Expense(ID, des, val);
+      } else if (type === 'inc') {
+        newItem = new Income(ID, des, val);
+      }
+
+      //push data to data structure
+      data.allItems[type].push(newItem);
+
+      //return new element
+      return newItem;
+    },
+    // testing function to see data structure without current UI
+    testing: function(){
+	     console.log(data);
+    }
+  };
+
 })();
 
 // Global constructor for testing
@@ -95,11 +126,13 @@ var controller = (function(budgetCtrl,UICtrl){
 
   // function to add budget item
   var ctrlAddItem = (function(){
+    var input, newItem;
 
     //1. add budget item
-    var input = UICtrl.getInput();
-    console.log(input);
+    input = UICtrl.getInput();
+      //console.log(input);
     //2. added item to budget budgetController
+    newItem = budgetCtrl.addItem(input.type, input.description, input.value);
     //3. add to the ui
     //4. calculate the budget
     //5. display the bugdget in the ui
