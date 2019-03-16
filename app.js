@@ -35,8 +35,29 @@ var UIController = (function(){
 // global controller, arguments are different to allow one stop name change (below)
 var controller = (function(budgetCtrl,UICtrl){
 
-  // connection to class names
-  var DOM = UICtrl.getDOMstrings();
+  // Event listener function
+  var setupEventListeners = function() {
+
+    // connection to class names
+    var DOM = UICtrl.getDOMstrings();
+
+    // calls add budget item function on click of + button
+    document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
+
+    // calls add budget on `enter` press
+    // this is global because it does not depend on an element interaction
+    document.addEventListener('keypress',function(event){
+      //we can use, e or event as the event passed as an argument
+      // console.log(event);
+      // you can see the kind of object an event is, see the prototypes
+      //keycode identifies the key that is pressed
+      if (event.KeyCode  === 13 || event.which === 13) {
+        ctrlAddItem();
+      }
+
+    });
+
+  };
 
   // function to add budget item
   var ctrlAddItem = (function(){
@@ -51,20 +72,14 @@ var controller = (function(budgetCtrl,UICtrl){
 
   });
 
-  // calls add budget item function on click of + button
-  document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
-
-  // calls add budget on `enter` press
-  // this is global because it does not depend on an element interaction
-  document.addEventListener('keypress',function(event){
-    //we can use, e or event as the event passed as an argument
-    // console.log(event);
-    // you can see the kind of object an event is, see the prototypes
-    //keycode identifies the key that is pressed
-    if (event.KeyCode  === 13 || event.which === 13) {
-      ctrlAddItem();
+  // init functions
+  return {
+    init: function(){
+      console.log("App is loading.");
+      setupEventListeners();
     }
-
-  });
+  };
 
 })(budgetController, UIController);
+
+controller.init();
