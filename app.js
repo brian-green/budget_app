@@ -59,15 +59,6 @@ var budgetController = (function(){
 
 })();
 
-// Global constructor for testing
-// test case: var inc1 = new Income(2,"Pay day",5000);
-// var Income = function(id, description, value) {
-//   this.id = id;
-//   this.description = description;
-//   this.value = value;
-// };
-
-// handles UI interactions
 var UIController = (function(){
 
 // object allowing one stop spot changes to class names
@@ -75,12 +66,12 @@ var UIController = (function(){
     inputType: '.add__type',
     inputDescription: '.add__description',
     inputValue: '.add__value',
-    inputBtn: '.add__btn'
+    inputBtn: '.add__btn',
+    incomeContainer: '.income__list',
+    expensesContainer: '.expenses__list'
   };
 
-// publically available functions
   return {
-    // input function
     getInput: function() {
       return {
         // we like query selector because the class syntax is the same as the DOMs
@@ -90,14 +81,43 @@ var UIController = (function(){
       };
     },
 
+    addListItem: function(obj, type){
+      // Create HTML string with placeholders
+      var html, element, newHTML;
+
+      if (type === 'inc') {
+
+          element = DOMstrings.incomeContainer;
+
+          html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+
+      } else if (type === 'exp'){
+
+          element = DOMstrings.expensesContainer;
+
+          html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+
+      }
+
+      //replace placeholders
+      newHTML = html.replace('%id%', obj.id);
+      newHTML = newHTML.replace('%description%', obj.description);
+      newHTML  = newHTML.replace('%value%', obj.value);
+
+      //insert html
+      document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
+
+    },
+
     // makes class hooks publically available
     getDOMstrings: function(){
       return DOMstrings;
     }
+
   };
+
 })();
 
-// global controller, arguments are different to allow one stop name change (below)
 var controller = (function(budgetCtrl,UICtrl){
 
   // Event listener function
@@ -112,10 +132,6 @@ var controller = (function(budgetCtrl,UICtrl){
     // calls add budget on `enter` press
     // this is global because it does not depend on an element interaction
     document.addEventListener('keypress',function(event){
-      //we can use, e or event as the event passed as an argument
-      // console.log(event);
-      // you can see the kind of object an event is, see the prototypes
-      //keycode identifies the key that is pressed
       if (event.KeyCode  === 13 || event.which === 13) {
         ctrlAddItem();
       }
@@ -134,6 +150,7 @@ var controller = (function(budgetCtrl,UICtrl){
     //2. added item to budget budgetController
     newItem = budgetCtrl.addItem(input.type, input.description, input.value);
     //3. add to the ui
+    UICtrl.addListItem(newItem, input.type);
     //4. calculate the budget
     //5. display the bugdget in the ui
 
