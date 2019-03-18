@@ -7,6 +7,7 @@
 4. _2019-03-16 03:02PM PDT_ Added new item function feeding into the data structure and testing function.
 5. _2019-03-16 09:30PM PDT_ Added function to add items to income and expense list in UI.
 6. _2019-03-18 08:01AM PDT_ Added input field clearing and refocusing.
+7. _2019-03-28 09:39AM PDT_ Added check for types and non-values in input entry.
 
 ![](https://github.com/brian-green/budget_app/blob/master/ui_additions.png?raw=true)
 

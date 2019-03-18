@@ -53,7 +53,7 @@ var budgetController = (function(){
     },
     // testing function to see data structure without current UI
     testing: function(){
-	     console.log(data);
+        console.log(data);
     }
   };
 
@@ -77,7 +77,7 @@ var UIController = (function(){
         // we like query selector because the class syntax is the same as the DOMs
         type: document.querySelector(DOMstrings.inputType).value, // returns inc or exp (income or expense)
         description: document.querySelector(DOMstrings.inputDescription).value,
-        value: document.querySelector(DOMstrings.inputValue).value
+        value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
       };
     },
 
@@ -114,13 +114,13 @@ var UIController = (function(){
         var fields, fieldsArr;
         
         // fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
-        fields = document.querySelector(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+        fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
         
         //tricking the method into thinking we have an array
         fieldsArr = Array.prototype.slice.call(fields);
         
         //first use of the foreach loop type
-        fieldsArr.forEach(function(currentElement) {
+        fieldsArr.forEach(function(currentElement,index,array) {
             currentElement.value = "";
         });
         
@@ -160,25 +160,43 @@ var controller = (function(budgetCtrl,UICtrl){
 
   };
 
-  // function to add budget item
-  var ctrlAddItem = (function(){
-    var input, newItem;
+    // function to add budget item
+    var ctrlAddItem = (function(){
+        var input, newItem;
 
-    //1. add budget item
-    input = UICtrl.getInput();
-      //console.log(input);
-    //2. added item to budget budgetController
-    newItem = budgetCtrl.addItem(input.type, input.description, input.value);
-    //3. add to the ui
-    UICtrl.addListItem(newItem, input.type);
-    //4. Clear fields
-    UICtrl.clearFields();
-    //5. calculate the budget
-    //6. display the bugdget in the ui
+        //1. add budget item
+        input = UICtrl.getInput();
+        //console.log(input);
+        
+        if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
+        
+            //2. added item to budget budgetController
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-  });
+            //3. add to the ui
+            UICtrl.addListItem(newItem, input.type);
 
-  // init functions
+            //4. Clear fields
+            UICtrl.clearFields();
+
+            //5. Calculate and update budget
+            updateBudget();
+        }
+    });
+    
+    // updating the budget controller
+    var updateBudget = function() {
+        //1. calculate the budget
+        
+        //2. return the budget
+        
+        //3. display the bugdget in the ui
+        
+    };
+    
+    
+
+// init functions
   return {
     init: function(){
       console.log("App is loading.");
