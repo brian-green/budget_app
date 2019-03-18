@@ -108,6 +108,26 @@ var UIController = (function(){
       document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
 
     },
+      
+    // clears entry fields at the top
+    clearFields: function(){
+        var fields, fieldsArr;
+        
+        // fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+        fields = document.querySelector(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+        
+        //tricking the method into thinking we have an array
+        fieldsArr = Array.prototype.slice.call(fields);
+        
+        //first use of the foreach loop type
+        fieldsArr.forEach(function(currentElement) {
+            currentElement.value = "";
+        });
+        
+        //Resets focus to the description
+        fieldsArr[0].focus();
+        
+    },
 
     // makes class hooks publically available
     getDOMstrings: function(){
@@ -151,8 +171,10 @@ var controller = (function(budgetCtrl,UICtrl){
     newItem = budgetCtrl.addItem(input.type, input.description, input.value);
     //3. add to the ui
     UICtrl.addListItem(newItem, input.type);
-    //4. calculate the budget
-    //5. display the bugdget in the ui
+    //4. Clear fields
+    UICtrl.clearFields();
+    //5. calculate the budget
+    //6. display the bugdget in the ui
 
   });
 
