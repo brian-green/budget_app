@@ -13,6 +13,15 @@ var budgetController = (function(){
     this.value = value;
   };
 
+  var calculateTotal = function(type) {
+    var sum = 0;
+    data.allItems[type].forEach(function(cur) {
+      sum += cur.value;
+    });
+    data.totals[type] = sum;
+
+  };
+
   //data structure
   var data = {
     allItems: {
@@ -23,7 +32,9 @@ var budgetController = (function(){
       //may just use a counter instead
       exp:0,
       inc:0
-    }
+    },
+    budget: 0,
+    percentage: -1
   };
 
   //public addItem function
@@ -51,6 +62,34 @@ var budgetController = (function(){
       //return new element
       return newItem;
     },
+
+    calculateBudget: function() {
+
+      // calculate total income and expenses
+      calculateTotal('exp');
+      calculateTotal('inc');
+
+      // calculate the budget: income - expenses
+      data.budget = data.totals.inc - data.totals.exp;
+
+      // calculate the percentage of income that we spent
+      if (data.totals.inc > 0) {
+        data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+      } else {
+        data.percentage = -1;
+      }
+
+    },
+
+    getBudget: function() {
+      return {
+        budget: data.budget,
+        totalInc: data.totals.inc,
+        totalExp: data.totals.exp,
+        percentage: data.percentage
+      }
+    },
+
     // testing function to see data structure without current UI
     testing: function(){
         console.log(data);
@@ -108,25 +147,25 @@ var UIController = (function(){
       document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
 
     },
-      
+
     // clears entry fields at the top
     clearFields: function(){
         var fields, fieldsArr;
-        
+
         // fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
         fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
-        
+
         //tricking the method into thinking we have an array
         fieldsArr = Array.prototype.slice.call(fields);
-        
+
         //first use of the foreach loop type
         fieldsArr.forEach(function(currentElement,index,array) {
             currentElement.value = "";
         });
-        
+
         //Resets focus to the description
         fieldsArr[0].focus();
-        
+
     },
 
     // makes class hooks publically available
@@ -160,6 +199,19 @@ var controller = (function(budgetCtrl,UICtrl){
 
   };
 
+  var updateBudget = function(){
+
+    //1. Calculate the budget
+    budgetCtrl.calculateBudget();
+
+    //2. Return the budget
+    var budget = budgetCtrl.getBudget();
+
+    //3. Display budget in UI, console logging for testing
+    console.log(budget);
+
+  };
+
     // function to add budget item
     var ctrlAddItem = (function(){
         var input, newItem;
@@ -167,9 +219,9 @@ var controller = (function(budgetCtrl,UICtrl){
         //1. add budget item
         input = UICtrl.getInput();
         //console.log(input);
-        
+
         if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
-        
+
             //2. added item to budget budgetController
             newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
@@ -183,18 +235,6 @@ var controller = (function(budgetCtrl,UICtrl){
             updateBudget();
         }
     });
-    
-    // updating the budget controller
-    var updateBudget = function() {
-        //1. calculate the budget
-        
-        //2. return the budget
-        
-        //3. display the bugdget in the ui
-        
-    };
-    
-    
 
 // init functions
   return {
