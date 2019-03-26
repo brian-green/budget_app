@@ -11,5 +11,6 @@
 
 ## 2. Removing I/O items, re-calculating budget
 1. _2019-03-25 09:11AM PDT_ Added budget controller actions: Calculating total income, expenses, and percentages.
+2. _2019-03-25 11:40PM PDT_ Added updating UI for budget totals and percentages.
 
 ## 3. Calculate percentages, display and format dates

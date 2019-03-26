@@ -29,7 +29,6 @@ var budgetController = (function(){
       inc:[]
     },
     totals: {
-      //may just use a counter instead
       exp:0,
       inc:0
     },
@@ -107,7 +106,11 @@ var UIController = (function(){
     inputValue: '.add__value',
     inputBtn: '.add__btn',
     incomeContainer: '.income__list',
-    expensesContainer: '.expenses__list'
+    expensesContainer: '.expenses__list',
+    budgetLabel:'.budget__value',
+    incomeLabel:'.budget__income--value',
+    expenseLabel:'.budget__expenses--value',
+    percentageLabel: '.budget__expenses--percentage'
   };
 
   return {
@@ -168,6 +171,17 @@ var UIController = (function(){
 
     },
 
+    displayBudget: function(obj) {
+	     document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
+       document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalInc;
+       document.querySelector(DOMstrings.expenseLabel).textContent = obj.totalExp;
+       if (obj.percentage > 0) {
+          document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage + '%';
+        }	else {
+          document.querySelector(DOMstrings.percentageLabel).textContent = '---';
+        }
+    },
+
     // makes class hooks publically available
     getDOMstrings: function(){
       return DOMstrings;
@@ -200,16 +214,16 @@ var controller = (function(budgetCtrl,UICtrl){
   };
 
   var updateBudget = function(){
+  	//1. Calculate the budget
+  	budgetCtrl.calculateBudget();
 
-    //1. Calculate the budget
-    budgetCtrl.calculateBudget();
+  	//2. Return the budget
+  	var budget = budgetCtrl.getBudget();
 
-    //2. Return the budget
-    var budget = budgetCtrl.getBudget();
-
-    //3. Display budget in UI, console logging for testing
-    console.log(budget);
-
+  	//3. Display budget in UI, console logging for testing
+  	//console.log(budget);
+  	UICtrl.displayBudget(budget);
+  	// note that the argument is the budget variable returned from point two in this function.
   };
 
     // function to add budget item
@@ -237,11 +251,18 @@ var controller = (function(budgetCtrl,UICtrl){
     });
 
 // init functions
+// init functions
   return {
-    init: function(){
-      console.log("App is loading.");
+  	init: function(){
+  		console.log("App is loading.");
+  		UICtrl.displayBudget({
+  			budget: 0,
+  			totalInc: 0,
+  			totalExp: 0,
+  			percentage:-1
+  		});
       setupEventListeners();
-    }
+  	}
   };
 
 })(budgetController, UIController);
